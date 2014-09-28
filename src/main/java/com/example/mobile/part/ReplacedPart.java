@@ -1,4 +1,5 @@
-package com.example.mobileservice;
+package com.example.mobile.part;
+
 
 /**
  *

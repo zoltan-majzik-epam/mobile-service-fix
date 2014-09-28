@@ -6,23 +6,35 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-/**
- *
- * @author vrg
- */
-public enum TaskScheduler {
 
-    INSTANCE;
+public class TaskScheduler {
 
+    private static TaskScheduler instance = null;
+    private static final Random random = new Random();
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
-    private Random random = new Random();
+    
+    private TaskScheduler() {
+    }
+    
+    public static TaskScheduler getInstance() {
+        if (instance == null) {
+            synchronized (TaskScheduler.class) {
+                if (instance == null) {
+                    instance = new TaskScheduler();
+                }
+            }
+        }
+        return instance;
+    }
 
-    public ScheduledFuture<?> scheduleTask(Runnable task, long delay, TimeUnit timeUnit) {
+    
+    private ScheduledFuture<?> scheduleTask(Runnable task, long delay, TimeUnit timeUnit) {
         return executorService.schedule(task, delay, timeUnit);
     }
 
     public ScheduledFuture<?> scheduleTaskToRandomTime(Runnable task, long minDelay, long maxDelay, TimeUnit timeUnit) {
 
+        
         long variance = maxDelay - minDelay;
 
         long delay = minDelay + random.nextInt((int) variance);

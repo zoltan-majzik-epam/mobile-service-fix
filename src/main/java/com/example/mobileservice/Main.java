@@ -1,12 +1,13 @@
 package com.example.mobileservice;
 
-import com.example.mobileservice.supplier.Supplier;
-import com.example.mobileservice.supplier.TaskScheduler;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.example.mobileservice.supplier.Supplier;
+
 
 /**
  *
@@ -15,9 +16,9 @@ import java.util.logging.Logger;
 public class Main {
     
     private MobileService mobileService;
-    private Supplier supplier;
     private final List<Client> clients = new ArrayList<>();
-    private TaskScheduler scheduler = TaskScheduler.INSTANCE;
+    private final Stock stock = Stock.getInstance();
+   // private TaskScheduler scheduler = TaskScheduler.getInstance();
     
     public static void main(String[] args) {
         Main main = new Main();
@@ -26,9 +27,8 @@ public class Main {
     }
 
     public Main() {
-        supplier = new Supplier();
-        mobileService = new MobileService(supplier);
-        for (int i = 0; i < 100; i++) {
+        mobileService = new MobileService();
+        for (int i = 0; i < 10; i++) {
             Client client = new Client(mobileService);
             clients.add(client);
         }
@@ -43,9 +43,8 @@ public class Main {
     
     public void startWorkAtMobileService() {
         while(true) {
-            mobileService.pollSupplier();
             mobileService.processWorksheets();
-            mobileService.orderParts();
+            stock.orderParts();
             try {
                 Thread.sleep(1000L);
             } catch (InterruptedException ex) {
